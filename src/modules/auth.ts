@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 export const comparePasswords = (password: string, hashedPassword: string): Promise<boolean> => {
     return bcrypt.compare(password, hashedPassword);
 }
+
 export const hashPassword = (password: string): Promise<string> => {
     return bcrypt.hash(password, 5);
 }
@@ -25,7 +26,7 @@ export const protect = (req, res, next) => {
         return;
     }
 
-    const [, token] = bearer.split(' ')[1];
+    const [, token] = bearer.split(' ');
 
     if (!token) {
         res.status(401);
@@ -36,8 +37,8 @@ export const protect = (req, res, next) => {
     try {
         req.user = jwt.verify(token, process.env.JWT_SECRET);
         next();
-    } catch {
-        console.error(Error);
+    } catch (error) {
+        console.error(error);
         res.status(401);
         res.json({message: 'Invalid token'});
         return;
