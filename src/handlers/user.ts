@@ -14,7 +14,7 @@ export const createNewUser = async (req, res) => {
     res.status(201).json({token});
 };
 
-export const signIn = async (req, res) => {
+export const signin = async (req, res) => {
     const user = await prisma.user.findUnique({
         where: {
             username: req.body.username
@@ -28,4 +28,6 @@ export const signIn = async (req, res) => {
         return;
     }
 
+    const token = createJWT(user);
+    res.json({token});
 };
